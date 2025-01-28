@@ -1,4 +1,4 @@
-
+const Survey = require('../models/surveyModel');  
 
 exports.createSurvey = async (req, res) => {
   try {
