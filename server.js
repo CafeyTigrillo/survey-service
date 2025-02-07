@@ -7,7 +7,7 @@ const sequelize = require('./config/database');
 app.use(cors());
 app.use(express.json());
 
-app.use('/api', surveyRoutes);
+app.use('/questions', surveyRoutes);
 
 sequelize.sync({ force: false }).then(() => {
   console.log("Database synchronized.");
@@ -16,3 +16,4 @@ sequelize.sync({ force: false }).then(() => {
     console.log(`Server running at http://localhost:${PORT}`);
   });
 });
+
