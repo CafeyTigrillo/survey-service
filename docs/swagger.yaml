@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: Survey API
+  description: API for creating and managing customer satisfaction surveys for restaurants.
+  version: "1.0.0"
+  contact:
+    name: Your Name
+    email: your.email@example.com
+    url: https://www.yourwebsite.com
+servers:
+  - url: http://localhost:3003
+    description: Local Development Server
+paths:
+  /questions/survey:
+    post:
+      summary: Create a new survey
+      description: This endpoint allows you to create a new survey for a restaurant.
+      operationId: createSurvey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - restaurant_id
+                - question_1
+                - question_2
+                - question_3
+                - question_4
+                - question_5
+              properties:
+                restaurant_id:
+                  type: integer
+                  description: The ID of the restaurant where the survey is being conducted. *Required*
+                question_1:
+                  type: integer
+                  description: Rating for question 1 (scale 1-5). *Required*
+                question_2:
+                  type: integer
+                  description: Rating for question 2 (scale 1-5). *Required*
+                question_3:
+                  type: integer
+                  description: Rating for question 3 (scale 1-5). *Required*
+                question_4:
+                  type: integer
+                  description: Rating for question 4 (scale 1-5). *Required*
+                question_5:
+                  type: integer
+                  description: Rating for question 5 (scale 1-5). *Required*
+      responses:
+        '201':
+          description: Survey created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Survey created successfully"
+                  survey:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      restaurant_id:
+                        type: integer
+                        example: 101
+                      question_1:
+                        type: integer
+                        example: 4
+                      question_2:
+                        type: integer
+                        example: 5
+                      question_3:
+                        type: integer
+                        example: 3
+                      question_4:
+                        type: integer
+                        example: 5
+                      question_5:
+                        type: integer
+                        example: 4
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Bad Request: Missing or invalid data"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to create survey due to a server error"
+components:
+  schemas:
+    Survey:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the survey.
+        restaurant_id:
+          type: integer
+          description: The ID of the restaurant where the survey is being conducted.
+        question_1:
+          type: integer
+          description: Rating for question 1 (scale 1-5).
+        question_2:
+          type: integer
+          description: Rating for question 2 (scale 1-5).
+        question_3:
+          type: integer
+          description: Rating for question 3 (scale 1-5).
+        question_4:
+          type: integer
+          description: Rating for question 4 (scale 1-5).
+        question_5:
+          type: integer
+          description: Rating for question 5 (scale 1-5).
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the survey was created.
