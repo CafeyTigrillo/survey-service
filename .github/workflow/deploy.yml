@@ -1,0 +1,43 @@
+name: Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the app
+        run: npm run build 
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t richard28/survey-service:latest .
+          docker push richard28/survey-service:latest 
+
+      - name: Deploy to EC2
+        run: |
+          echo "${{ secrets.AWS_SSH_KEY }}" > key.pem
+          chmod 400 key.pem
+          ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.AWS_USER }}@${{ secrets.AWS_HOST }} << 'EOF'
+            docker pull richard28/survey-service:latest 
+            docker-compose up -d
+            exit
+          EOF
