@@ -1,29 +1,12 @@
-const Survey = require('../models/surveyModel');  
+const Survey = require('../models/surveyModel');
 
 exports.createSurvey = async (req, res) => {
   try {
-    const { restaurant_id, question_1, question_2, question_3, question_4, question_5 } = req.body;
-
-    const survey = await Survey.create({
-      restaurant_id,
-      question_1,
-      question_2,
-      question_3,
-      question_4,
-      question_5
-    });
-
-
-    res.status(201).json({
-      message: 'Survey created successfully',
-      survey
-    });
+    const survey = new Survey(req.body);
+    await survey.save();
+    res.status(201).json({ message: 'Survey created successfully', survey });
   } catch (error) {
     console.error('Detailed error:', error);
-    res.status(500).json({ 
-      message: 'Error creating the survey',
-      errorDetails: error.message,
-      errorStack: error.stack
-    });
+    res.status(500).json({ message: 'Error creating the survey', errorDetails: error.message });
   }
 };
