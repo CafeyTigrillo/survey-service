@@ -8,8 +8,8 @@ info:
     email: your.email@example.com
     url: https://www.yourwebsite.com
 servers:
-  - url: http://localhost:3003
-    description: Local Development Server
+  - url: http://ec2-13-216-183-248.compute-1.amazonaws.com:3003
+    description: EC2 Development Server
 paths:
   /questions/survey:
     post:

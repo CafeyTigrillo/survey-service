@@ -1,28 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const surveyRoutes = require('./routes/surveyRoutes');
-const mongoose = require('./config/database');
+const mongoose = require('./config/database'); 
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs'); 
 const swaggerDocument = yaml.load('./docs/swagger.yaml'); 
 const Eureka = require('eureka-js-client').Eureka;
 
 const app = express();
-const PORT = 3003;
+const PORT = 3011;
 
 const eurekaClient = new Eureka({
   instance: {
     app: 'survey-service',
-    hostName: 'localhost',
-    ipAddr: '127.0.0.1',
+    hostName: 'ec2-13-216-183-248.compute-1.amazonaws.com',
+    ipAddr: 'ec2-13-216-183-248.compute-1.amazonaws.com',
     port: {
       '$': PORT,
       '@enabled': true,
     },
     vipAddress: 'survey-service',
-    statusPageUrl: `http://localhost:${PORT}/info`,
-    healthCheckUrl: `http://localhost:${PORT}/health`,
-    homePageUrl: `http://localhost:${PORT}`,
+    statusPageUrl: `http://ec2-13-216-183-248.compute-1.amazonaws.com:${PORT}/info`,
+    healthCheckUrl: `http://ec2-13-216-183-248.compute-1.amazonaws.com:${PORT}/health`,
+    homePageUrl: `http://ec2-13-216-183-248.compute-1.amazonaws.com:${PORT}`,
     dataCenterInfo: {
       '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
       name: 'MyOwn',
@@ -33,7 +33,7 @@ const eurekaClient = new Eureka({
     leaseExpirationDurationInSeconds: 90,
   },
   eureka: {
-    host: 'localhost',
+    host: 'ec2-13-216-183-248.compute-1.amazonaws.com',
     port: 8761,
     servicePath: '/eureka/apps/',
     maxRetries: 10,
@@ -61,16 +61,11 @@ app.use(express.json());
 app.use('/questions', surveyRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(PORT, async () => {
-  try {
-    await sequelize.sync({ force: false });
-    eurekaClient.start(error => {
-      console.log(error || 'Eureka registration complete');
-    });
-    console.log(`Survey service running at http://localhost:${PORT}`);
-  } catch (error) {
-    console.error("Database connection error:", error);
-  }
+app.listen(PORT, () => {
+  eurekaClient.start(error => {
+    console.log(error || 'Eureka registration complete');
+  });
+  console.log(`Survey service running at http://ec2-13-216-183-248.compute-1.amazonaws.com:${PORT}`);
 });
 
 process.on('SIGINT', () => {
